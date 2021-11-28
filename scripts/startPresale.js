@@ -17,26 +17,18 @@ async function main() {
   const account = await accounts[0].getAddress()
 
   // We get the contract to deploy
-  const MPARKToken = await hre.ethers.getContractFactory("MPARKToken");
-  let totalSupply = "100000000000000000000000000000"; //100BN TOKENS blockdemyToken
-  const mPARKToken = await MPARKToken.deploy(totalSupply);
+  const contractAddress = "0x86A2EE8FAf9A840F7a2c64CA3d51209F9A02081D";
+  const presaleContract = await hre.ethers.getContractAt("Presale", contractAddress);
 
-  await mPARKToken.deployed();
+
+  let minBuy = web3.utils.toWei('0.1', 'ether');
+  let maxBuy = web3.utils.toWei('2', 'ether')
+  let softCap = web3.utils.toWei('0.1', 'ether')
+  let hardCap = web3.utils.toWei('20', 'ether')
   
-  const Presale = await hre.ethers.getContractFactory("Presale");
-  const presale = await Presale.deploy(1000,account,mPARKToken.address,18);
-  
-  await presale.deployed();
-  //send 25% to presale, we can get the supply and mul by 0.25 later (40BN), we will send 50% to play to earn
-  await mPARKToken.approve(account,"25000000000000000000000000000")
-  await mPARKToken.transferFrom(account,presale.address,"25000000000000000000000000000");
-
-  let balanceOfPresale = await mPARKToken.balanceOf(presale.address);
-
-
-  console.log(balanceOfPresale.toString());
-  console.log("const mPARKToken=\""+mPARKToken.address+"\";");
-  console.log("const presale=\""+presale.address+"\";");
+  /*let balance = await presaleContract.getEndDate();
+  console.log(balance);*/
+  await presaleContract.startICO("1638130241",minBuy,maxBuy,softCap,hardCap,{from:account});
 
 
 }

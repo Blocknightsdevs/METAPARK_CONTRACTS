@@ -1,6 +1,6 @@
 pragma solidity ^0.8.4;
 // SPDX-License-Identifier: Unlicensed
-
+import "hardhat/console.sol";
 
 abstract contract Context {
     function _msgSender() internal view virtual returns (address payable) {
@@ -187,6 +187,7 @@ contract Presale is ReentrancyGuard, Context, Ownable {
     
     
     //Start Pre-Sale
+    //https://www.epochconverter.com/ (to get timestap to end date)
     function startICO(uint endDate, uint _minPurchase, uint _maxPurchase, uint _softCap, uint _hardCap) external onlyOwner icoNotActive() {
         startRefund = false;
         refundStartDate = 0;
@@ -313,6 +314,14 @@ contract Presale is ReentrancyGuard, Context, Ownable {
 				emit Refund(msg.sender, amount);
 			}
 		}
+    }
+
+    function getTimeStamp() public view returns (uint){
+        return block.timestamp;
+    }
+
+    function getEndDate() public view returns (uint){
+        return endICO;
     }
     
     modifier icoActive() {
